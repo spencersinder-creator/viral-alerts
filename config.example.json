@@ -1,0 +1,11 @@
+{
+  "ntfy_topic": "pick-a-hard-to-guess-name-here",
+  "discord_webhook_url": "",
+  "discord_bot_token": "",
+  "discord_channel_ids": [],
+  "rss_feeds": [],
+  "subreddits": ["memecoins", "CryptoMoonShots", "SatoshiStreetBets", "solana"],
+  "min_liquidity_usd": 20000,
+  "alert_score": 5,
+  "unicorn_score": 8
+}

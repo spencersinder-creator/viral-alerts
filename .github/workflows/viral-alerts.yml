@@ -1,0 +1,43 @@
+name: Viral alerts
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: viral-alerts
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore alert history
+        uses: actions/cache/restore@v4
+        with:
+          path: state.json
+          key: viral-alerts-state-${{ github.run_id }}
+          restore-keys: viral-alerts-state-
+
+      - name: Check for viral signals
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_CHANNEL_IDS: ${{ secrets.DISCORD_CHANNEL_IDS }}
+          RSS_FEEDS: ${{ secrets.RSS_FEEDS }}
+        run: python viral_alerts.py
+
+      - name: Save alert history
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: state.json
+          key: viral-alerts-state-${{ github.run_id }}
